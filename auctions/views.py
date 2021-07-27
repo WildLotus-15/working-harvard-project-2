@@ -46,20 +46,34 @@ def bid(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     form = NewBidForm(request.POST)
     if form.is_valid():
-        offer = request.POST['offer']
-        print("offer: ", request.POST['offer'])
-        newBid = form.save(commit=False)
-        listing.current_bid = offer
-        newBid.listing = listing 
-        newBid.author = request.user
-        newBid.save()
-        listing.save()
-        return HttpResponseRedirect(reverse("listing", args=[listing_id]))
+        offer = float(request.POST['offer'])
+        if is_valid(offer, listing):
+            print("current_price: ", listing.current_bid)
+            newBid = form.save(commit=False)
+            listing.current_bid = offer
+            newBid.listing = listing 
+            newBid.author = request.user
+            newBid.save()
+            listing.save()
+            return HttpResponseRedirect(reverse("listing", args=[listing_id]))
+        else:
+            return render(request, "auctions/bid.html", {
+                "listing": listing,
+                "form": NewBidForm(),
+                "value_error": True
+            })
     else:
         return render(request, "auctions/bid.html", {
-            "form": NewBidForm()
+            "form": NewBidForm(),
+            "listing": listing
         })
-    
+
+def is_valid(offer, listing):
+    if offer >= listing.starting_bid and (listing.current_bid is None or offer > listing.current_bid):
+        return True
+    else:
+        return False    
+
 def comment(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     form = NewCommentForm(request.POST)

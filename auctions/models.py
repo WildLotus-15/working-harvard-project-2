@@ -16,9 +16,9 @@ class Listing(models.Model):
     title = models.CharField(max_length=64)
     description = models.TextField(null=True)
     image_url = URLField(max_length=255, blank=True)
-    starting_bid = models.DecimalField(decimal_places=2, max_digits=5, null=True)
+    starting_bid = models.FloatField(null=True)
     date = models.DateTimeField(auto_now_add=True, null=True)
-    current_bid = models.DecimalField(decimal_places=2, max_digits=5, null=True, blank=True)
+    current_bid = models.FloatField(null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
     author = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
 

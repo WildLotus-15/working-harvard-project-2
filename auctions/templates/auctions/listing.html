@@ -26,8 +26,9 @@
         </ul>
     </div>
 </div>
+Bids:
 {% for bid in listing.bids.all %}
-bids: {{ bid.author }} {{ bid.offer }}
+{{ bid.author }} {{ bid.offer }}
 {% endfor %}
 <form action="{% url 'place_bid' listing.id %}" method="POST">
     {% csrf_token %}
