@@ -1,0 +1,47 @@
+{% extends "auctions/layout.html"%}
+
+{% block title %}{{ listing.title }}{% endblock title %}
+
+{% block body %}
+<div class="card" style="width: 400px;">
+    {% if listing.image_url %}
+    <img class="card-img-top" src="{{ listing.image_url }}" alt="Card image cap">
+    {% else %}
+    <p class="card-top" style="text-align: center; margin: 100px;">No image specified</p>
+    {% endif %}
+    <div class="card-body">
+        <strong>
+            <h5 class="card-title">Listing: {{ listing.title }}</h5>
+        </strong>
+        <p class="card-text">Description: {{ listing.description }}</p>
+        <p class="card-text">Starting Price: ${{ listing.starting_bid }}</p>
+        <a href="{% url 'index' %}">Back to all listings.</a>
+         
+    </div>
+    <div class="card-body">
+        <h5>Details:</h5>
+        <ul>
+            <li>Listed by: {{ listing.author }}</li>
+            <li>Category: {{ listing.category }}</li>
+        </ul>
+    </div>
+</div>
+{% for bid in listing.bids.all %}
+bids: {{ bid.author }} {{ bid.offer }}
+{% endfor %}
+<form action="{% url 'place_bid' listing.id %}" method="POST">
+    {% csrf_token %}
+    {{ bid_form.as_p }}
+    <button type="submit">Place</button>
+</form>
+{% if user.is_authenticated %}
+<form action="{% url 'comment' listing.id %}" method="POST">
+    {% csrf_token %}
+    {{ comment_form.as_p }}
+    <button type="submit">Add</button>
+{% for comment in listing.comments.all %}
+{{ comment }} {{ comment.author }} {{ comment.date }}
+{% endfor %}
+{% endif %}
+</form>
+{% endblock %}
