@@ -4,17 +4,17 @@
 
 {% block body %}
 <div class="wrapper">
-    <div class="row" style="height: 500px; padding: 60px; margin-left: 150px;">
+    <div class="row" style="height: 500px; padding: 0 20px ; margin-left: 250px;">
         <div class="col-xs-4">
         {% if listing.image_url %}
             <img src="{{ listing.image_url }}" alt="Card image cap" style="width: 400px; height: 500px">
         {% else %}
-            <div class="h-100 p-3 border border-secondary" style="width: 550px;">
-                <p class="text-center" style="padding-top: 120px; font-size: 50px;">No Image Found</p>
+            <div class="p-3">
+                <img src="static/auctions/not-found.png" alt="No-image" style="height: 350px;">
             </div>
         {% endif %}
         </div>
-        <div class="col-xs-4 border border-primary text-center align-middle" style="width: 300px; padding-top: 30px; margin-left: 10px; display: inline-block;">
+        <div class="col-xs-4 border border-secondary" style="padding-left: 20px; width: 300px; height: 350px; margin-top: 15px ;padding-top: 20px; margin-left: 10px; display: inline-block;">
             <strong>
                 <h5 class="card-title">Listing: {{ listing.title }}</h5>
             </strong>
