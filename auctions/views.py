@@ -82,10 +82,6 @@ def comment(request, listing_id):
         newComment.author = request.user
         newComment.save()
         return HttpResponseRedirect(reverse("listing", args=[listing_id]))
-    else:
-        return render(request, "auctions/comment.html", {
-            "form": NewCommentForm()
-        })
 
 def closeListing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
