@@ -20,6 +20,8 @@ class Listing(models.Model):
     date = models.DateTimeField(auto_now_add=True, null=True)
     current_bid = models.FloatField(null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
+    active = models.BooleanField(default=True)
+    buyer = models.ForeignKey(User, on_delete=models.PROTECT, related_name='buyer', null=True, blank=True)
     author = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
 
     def __str__(self):

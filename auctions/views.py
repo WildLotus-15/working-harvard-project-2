@@ -8,11 +8,11 @@ from django.urls import reverse
 from .models import User, Listing, Bid
 from .forms import NewBidForm, NewCommentForm, NewListingForm
 
-def index(request):
-    listing = Listing.objects.all()
+def activeListing(request):
+    listing = Listing.objects.filter(active=True)
     return render(request, "auctions/index.html", {
         "listing": listing
-    })
+    })    
 
 def listing(request, listing_id):
     if not request.user.is_authenticated:
@@ -48,7 +48,6 @@ def bid(request, listing_id):
     if form.is_valid():
         offer = float(request.POST['offer'])
         if is_valid(offer, listing):
-            print("current_price: ", listing.current_bid)
             newBid = form.save(commit=False)
             listing.current_bid = offer
             newBid.listing = listing 
@@ -87,6 +86,13 @@ def comment(request, listing_id):
         return render(request, "auctions/comment.html", {
             "form": NewCommentForm()
         })
+
+def closeListing(request, listing_id):
+    listing = Listing.objects.get(pk=listing_id)
+    if request.user == listing.author:
+        listing.active = False
+        listing.buyer = Bid.objects.filter(listing=listing).last().user
+        listing.save()
 
 def login_view(request):
     if request.method == "POST":
