@@ -1,15 +1,25 @@
 {% extends 'auctions/layout.html' %}
 
-{% block title %}Creating New Listing{% endblock title %}
+{% block title %}Bid{% endblock title %}
 
 {% block body %}
-    <h1>Create</h1>
-    <form action="" method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Create</button>
-    </form>
+    {% if user.is_authenticated and listing.author != user %}
     {% if value_error %}
-        <p>Your bid must be at least as large as starting bid: ${{ listing.starting_bid }} and must be greater than any other offers (if any).</p>
+    <div class="alert alert-danger" role="alert">
+        Your bid must be at least as large as starting bid: ${{ listing.starting_bid }} and must be greater than any other offers (if any).
+    </div>
+    {% endif %}
+        <h1>Place Bid</h1>
+        <form action="" method="POST">
+            {% csrf_token %}
+            {{ form }}
+            <button type="submit" class="btn btn-primary">Place</button>
+        </form>
+        <h5>All Bids</h5>
+        {% for bid in listing.bids.all %}
+        <ul class="list-group">
+            <li class="list-group-item">{{ bid.author }} ${{ bid.offer }} {{ bid.date }}</li>
+        </ul>
+        {% endfor %}
     {% endif %}
 {% endblock body %}

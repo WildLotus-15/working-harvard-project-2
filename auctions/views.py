@@ -54,7 +54,7 @@ def bid(request, listing_id):
             newBid.author = request.user
             newBid.save()
             listing.save()
-            return HttpResponseRedirect(reverse("listing", args=[listing_id]))
+            return HttpResponseRedirect(reverse("bid", args=[listing_id]))
         else:
             return render(request, "auctions/bid.html", {
                 "listing": listing,

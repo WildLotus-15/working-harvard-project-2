@@ -15,28 +15,15 @@
         {% endif %}
         </div>
         <div class="col-xs-4 border border-secondary" style="padding-left: 20px; width: 300px; height: 350px; margin-top: 15px ;padding-top: 20px; margin-left: 10px; display: inline-block;">
-            <strong><h5 class="card-title">Listing: {{ listing.title }}</h5></strong>
+            <h4 class="card-title">Listing: {{ listing.title }}</h4>    
             <p class="card-text">Description: {{ listing.description }}</p>
-            <p class="card-text">Starting Price: ${{ listing.starting_bid }}</p>
-            <a href="{% url 'index' %}">Back to all listings.</a>
-
-            {% if user.is_authenticated and listing.author != user%}
-                <form action="{% url 'place_bid' listing.id %}" method="POST">
-                    {% csrf_token %}
-                    {{ bid_form }}
-                    <button type="submit">Bid</button>
-                </form>
-                {% if value_error %}
-                    <p>Your bid must be at least as large as starting bid: ${{ listing.starting_bid }} and must be greater than any other offers (if any).</p>
-                {% endif %}
-            {% endif %}
-        
-            {% for bid in listing.bids.all %}
-                {{ bid.author }} {{ bid.offer }}
-            {% endfor %}
-            {% for comment in listing.comments.all %}
-                {{ comment }} {{ comment.author }} {{ comment.date }}
-            {% endfor %}
+            <p class="card-text">Starting Price: ${{ listing.starting_bid }} | <a href="{% url 'bid' listing.id %}">Bid on this item</a></p>
+            <h5>Details</h5>
+            <ul>
+                <li>Listed by: {{ listing.author }}</li>
+                <li>Category: {{ listing.category }}</li>
+            </ul>
+            <a href="{% url 'index' %}">Back to all listings</a>
         </div>
     </div>    
 </div>
