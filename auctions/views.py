@@ -6,22 +6,25 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import User, Listing, Bid
+from .models import User, Listing, Bid, Comment
 from .forms import NewBidForm, NewCommentForm, NewListingForm
 
 def activeListing(request):
     listing = Listing.objects.filter(active=True)
     return render(request, "auctions/index.html", {
-        "listing": listing
-    })    
+        "listing": listing,
+    })
 
 def listing(request, listing_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('login'))
     listing = Listing.objects.get(pk=listing_id)
+    comments = Comment.objects.filter(listing=listing)
+    comment_count = comments.count()
     return render(request, "auctions/listing.html", {
         "listing": listing,
         "comments": listing.comments.all(),
+        "comment_count": comment_count,
         "comment_form": NewCommentForm(),
         "bid_form": NewBidForm(),
         "bid": Bid.objects.all()
@@ -87,6 +90,10 @@ def comment(request, listing_id):
         newComment.author = request.user
         newComment.save()
         return HttpResponseRedirect(reverse("listing", args=[listing_id]))
+    else:
+        return render(request, "auctions/listing.html", {
+            "comment_form": NewCommentForm(),
+        })
 
 def closeListing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)

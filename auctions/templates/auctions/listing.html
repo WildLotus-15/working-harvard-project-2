@@ -35,6 +35,10 @@
             <button type="submit">Add</button>
         </form>
     {% endif %}
+    Comments: ({{ comment_count }})
+    {% for comment in comments %}
+        {{ comment.author }} {{ comment }} {{ comment.date }}
+    {% endfor %}
 </div>
 
 {% endblock %}
