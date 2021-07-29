@@ -15,11 +15,19 @@
             {{ form }}
             <button type="submit" class="btn btn-primary">Place</button>
         </form>
-        <h5>All Bids</h5>
-        {% for bid in listing.bids.all %}
-        <ul class="list-group">
-            <li class="list-group-item">{{ bid.author }} ${{ bid.offer }} {{ bid.date }}</li>
-        </ul>
-        {% endfor %}
+        <div class="card" style="width: 350px">
+            <div class="card-header">All Bids ({{ bid_count }})</div>
+            {% for bid in listing.bids.all %}
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">{{ bid.author }} - ${{ bid.offer }} {{ bid.date }}</li>
+                    {% empty %}
+                <li class="list-group-item">No bids has been placed yet.</li>
+                </ul>
+            {% endfor %}
+          </div>
+    {% else %}
+    <div class="alert alert-danger" role="alert">
+        You can't bid on this item because you are the creator of that listing!
+    </div>
     {% endif %}
 {% endblock body %}

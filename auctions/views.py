@@ -4,6 +4,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import User, Listing, Bid
 from .forms import NewBidForm, NewCommentForm, NewListingForm
@@ -44,6 +45,8 @@ def newListing(request):
 
 def bid(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
+    bids = Bid.objects.filter(listing=listing)
+    bid_count = bids.count()
     form = NewBidForm(request.POST)
     if form.is_valid():
         offer = float(request.POST['offer'])
@@ -59,12 +62,14 @@ def bid(request, listing_id):
             return render(request, "auctions/bid.html", {
                 "listing": listing,
                 "form": NewBidForm(),
-                "value_error": True
+                "value_error": True,
+                "bid_count": bid_count
             })
     else:
         return render(request, "auctions/bid.html", {
             "form": NewBidForm(),
-            "listing": listing
+            "listing": listing,
+            "bid_count": bid_count
         })
 
 def is_valid(offer, listing):
