@@ -27,13 +27,15 @@
         </div>
     </div>    
 </div>
-<div class="col" style="margin-left: 270px">
+<div class="col" style="margin-left: 285px; width: 795px">
     {% if user.is_authenticated %}
-        <form action="{% url 'comment' listing.id %}" method="POST">
-            {% csrf_token %}
-            {{ comment_form }}
-            <button type="submit">Add</button>
-        </form>
+            <form action="{% url 'comment' listing.id %}" method="POST">
+                {% csrf_token %}
+                {{ comment_form }}
+                <div style="margin-top: 10px;">
+                <button type="submit" class="btn btn-primary">Add</button>
+                </div> 
+            </form>        
     {% endif %}
     Comments: ({{ comment_count }})
     {% for comment in comments %}
