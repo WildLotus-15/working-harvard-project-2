@@ -2,45 +2,53 @@
 
 {% block title %}{{ listing.title }}{% endblock title %}
 
+</style>
 {% block body %}
 <div class="wrapper" style="height: 390px;">
     <div class="row" style="height: 500px; padding: 0 20px ; margin-left: 250px;">
         <div class="col-xs-4">
-        {% if listing.image_url %}
-            <img src="{{ listing.image_url }}" alt="Card image cap" style="width: 370px; height: 352px; margin-top: 14px;">
-        {% else %}
+            {% if listing.image_url %}
+            <img src="{{ listing.image_url }}" alt="Card image cap"
+                style="width: 370px; height: 352px; margin-top: 14px;">
+            {% else %}
             <div class="p-3">
                 <img src="static/auctions/not-found.png" alt="No-image" style="height: 350px;">
             </div>
-        {% endif %}
+            {% endif %}
         </div>
-        <div class="col-xs-4 border border-secondary" style="padding-left: 20px; width: 300px; height: 350px; margin-top: 15px ;padding-top: 20px; margin-left: 10px; display: inline-block;">
-            <h4 class="card-title">Listing: {{ listing.title }}</h4>    
+        <div class="col-xs-4 border border-secondary"
+            style="padding-left: 20px; width: 300px; height: 350px; margin-top: 15px ;padding-top: 20px; margin-left: 10px; display: inline-block;">
+            <h4 class="card-title">Listing: {{ listing.title }}</h4>
             <p class="card-text">Description: {{ listing.description }}</p>
-            <p class="card-text">Starting Price: ${{ listing.starting_bid }} | <a href="{% url 'bid' listing.id %}">Bid on this item</a></p>
+            <p class="card-text">Starting Price: ${{ listing.starting_bid }} | <a href="{% url 'bid' listing.id %}">Bid
+                    on this item</a></p>
             <h5>Details</h5>
             <ul>
                 <li>Listed by: {{ listing.author }}</li>
                 <li>Category: {{ listing.category }}</li>
             </ul>
-            <a href="{% url 'index' %}">Back to all listings</a>
         </div>
-    </div>    
+    </div>
 </div>
-<div class="col" style="margin-left: 285px; width: 795px">
+<div class="comment-form" style="margin-left: 285px; width: 468px; display: flex;">
     {% if user.is_authenticated %}
-            <form action="{% url 'comment' listing.id %}" method="POST">
-                {% csrf_token %}
-                {{ comment_form }}
-                <div style="margin-top: 10px;">
-                <button type="submit" class="btn btn-primary">Add</button>
-                </div> 
-            </form>        
+    <div style="flex: 1;">
+        <form action="{% url 'comment' listing.id %}" method="POST">
+            {% csrf_token %}
+            {{ comment_form }}
+        </form>
+    </div>
+    <div style="flex: 1">
+        <button type="submit" class="btn btn-primary" style="width: 60px; margin-left: 9px;">Add</button>
+    </div>
     {% endif %}
-    Comments: ({{ comment_count }})
-    {% for comment in comments %}
-        {{ comment.author }} {{ comment }} {{ comment.date }}
-    {% endfor %}
+</div>
+<div class="card" style="width: 18rem; float: left;">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">Cras justo odio</li>
+      <li class="list-group-item">Dapibus ac facilisis in</li>
+      <li class="list-group-item">Vestibulum at eros</li>
+    </ul>
 </div>
 
 {% endblock %}

@@ -1,10 +1,9 @@
 from typing import List
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import User, Listing, Bid, Comment
 from .forms import NewBidForm, NewCommentForm, NewListingForm
@@ -21,13 +20,16 @@ def listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     comments = Comment.objects.filter(listing=listing)
     comment_count = comments.count()
+    if request.user in listing.watchers.all():
+        listing.is_watched = True
+    else:
+        listing.is_watched = False
     return render(request, "auctions/listing.html", {
         "listing": listing,
         "comments": listing.comments.all(),
         "comment_count": comment_count,
         "comment_form": NewCommentForm(),
-        "bid_form": NewBidForm(),
-        "bid": Bid.objects.all()
+        "in_watchlist": listing.is_watched
     })
 
 def newListing(request):
@@ -45,6 +47,17 @@ def newListing(request):
         "form": NewListingForm(),
         "success": True
     })
+
+def change_watchlist(request, listing_id, reverse_method):
+    listing = Listing.objects.get(pk=listing_id)
+    if request.user in listing.watchers.all():
+        listing.watchers.remove(request.user)
+    else:
+        listing.watchers.add(request.user)
+    if reverse_method == "listing":
+        return listing(request, listing_id)
+    else:
+        return HttpResponseRedirect(reverse(reverse_method))
 
 def bid(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)

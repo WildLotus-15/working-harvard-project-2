@@ -24,6 +24,7 @@ class NewCommentForm(ModelForm):
         super(NewCommentForm, self).__init__(*args, **kwargs)
         self.fields['comment'].widget.attrs = {'class':'form-control', 'placeholder': 'Write a comment...',}
         self.fields['comment'].label = ''
+        self.fields['comment'].widget.attrs['style'] = 'width: 398px'
 
     class Meta:
         model = Comment

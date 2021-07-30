@@ -23,6 +23,7 @@ class Listing(models.Model):
     active = models.BooleanField(default=True)
     buyer = models.ForeignKey(User, on_delete=models.PROTECT, related_name='buyer', null=True, blank=True)
     author = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
+    watchers = models.ManyToManyField(User, blank=True, related_name="watched_listings")
 
     def __str__(self):
         return f"{self.title}: {self.description}"
