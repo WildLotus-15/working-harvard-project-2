@@ -20,8 +20,13 @@
             style="padding-left: 20px; width: 300px; height: 350px; margin-top: 15px; padding-top: 20px; margin-left: 10px; display: inline-block;">
             <h4 class="card-title">Listing: {{ listing.title }}</h4>
             <p class="card-text">Description: {{ listing.description }}</p>
-            <p class="card-text">Starting Price: ${{ listing.starting_bid }} | <a href="{% url 'bid' listing.id %}">Bid
-                    on this item</a></p>
+            <p class="card-text">Starting Price: ${{ listing.starting_bid }}
+                {% if listing.active and listing.author == user %}
+                    | <a href="{% url 'bid' listing.id %}">View bids</a></p>
+                {% endif %}
+                {% if listing.active and listing.author != user %}
+                | <a href="{% url 'bid' listing.id %}">Bid on this item</a></p>
+                {% endif %}
             <h5>Details</h5>
             <ul>
                 <li>Listed by: {{ listing.author }}</li>
@@ -32,7 +37,7 @@
             {% endif %}
             {% if listing.buyer is not None and listing.active == False %}
                 {% if listing.author == user %}
-                    You've sold this item to {{ listing.buyer }} for {{ listing.current_bid }}
+                    You've sold this item to {{ listing.buyer }} for {{ listing.current_bid|default:listing.starting_bid }}
                 {% elif listing.buyer == user %}
                     Congratulations you've won this auction!
                 {% else %}

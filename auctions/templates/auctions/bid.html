@@ -3,13 +3,14 @@
 {% block title %}Bid{% endblock title %}
 
 {% block body %}
-{% if user.is_authenticated and listing.author != user %}
+{% if user.is_authenticated %}
 {% if value_error %}
 <div class="alert alert-danger" role="alert">
     Your bid must be at least as large as starting bid: ${{ listing.starting_bid }} and must be greater than any other
     offers (if any).
 </div>
 {% endif %}
+{% if listing.author != user %}
 <div style="display: flex">
     <div style="flex: 1;">
         <form action="" method="POST">
@@ -21,6 +22,12 @@
     </div>
     </form>
 </div>
+{% endif %}
+{% if listing.author == user %}
+<div class="alert alert-warning" role="alert">
+    You can't bid on this item because you are creator of its auction listing!
+</div>
+{% endif %}
 <div class="card" style="width: 360px">
     <div class="card-header">All Bids ({{ bid_count }})</div>
     {% for bid in listing.bids.all %}
