@@ -27,6 +27,18 @@
                 <li>Listed by: {{ listing.author }}</li>
                 <li>Category: {{ listing.category }}</li>
             </ul>
+            {% if listing.active and listing.author == user %}
+                <a class="btn btn-outline-info" href="{% url 'close_listing' listing.id %}" role="button">Close</a>
+            {% endif %}
+            {% if listing.buyer is not None and listing.active == False %}
+                {% if listing.author == user %}
+                    You've sold this item to {{ listing.buyer }} for {{ listing.current_bid }}
+                {% elif listing.buyer == user %}
+                    Congratulations you've won this auction!
+                {% else %}
+                    This item is already sold
+                {% endif %}
+            {% endif %}
         </div>
     </div>
 </div>

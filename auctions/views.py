@@ -112,8 +112,9 @@ def closeListing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     if request.user == listing.author:
         listing.active = False
-        listing.buyer = Bid.objects.filter(listing=listing).last().user
+        listing.buyer = Bid.objects.filter(listing=listing).last().author
         listing.save()
+        return HttpResponseRedirect(reverse('listing', args=[listing_id]))
 
 def login_view(request):
     if request.method == "POST":
