@@ -6,8 +6,7 @@
 {% if user.is_authenticated %}
 {% if value_error %}
 <div class="alert alert-danger" role="alert">
-    Your bid must be at least as large as starting bid: ${{ listing.starting_bid }} and must be greater than any other
-    offers (if any).
+    Your bid must be at least as large as starting bid and must be greater than any other offers (if any).
 </div>
 {% endif %}
 {% if listing.author != user %}
@@ -29,7 +28,7 @@
 </div>
 {% endif %}
 <div class="card" style="width: 360px">
-    <div class="card-header">All Bids ({{ bid_count }})</div>
+    <div class="card-header">All Bids ({{ bid_count }}); Starting bid = ${{ listing.starting_bid }}</div>
     {% for bid in listing.bids.all %}
     <ul class="list-group list-group-flush">
         <li class="list-group-item">{{ bid.author }} - ${{ bid.offer }} {{ bid.date }}</li>

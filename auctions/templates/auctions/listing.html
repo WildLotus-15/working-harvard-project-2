@@ -22,51 +22,53 @@
             <p class="card-text">Description: {{ listing.description }}</p>
             <p class="card-text">Starting Price: ${{ listing.starting_bid }}
                 {% if listing.active and listing.author == user %}
-                    | <a href="{% url 'bid' listing.id %}">View bids</a></p>
-                {% endif %}
-                {% if listing.active and listing.author != user %}
-                | <a href="{% url 'bid' listing.id %}">Bid on this item</a></p>
-                {% endif %}
+                | <a href="{% url 'bid' listing.id %}">View bids</a></p>
+            {% endif %}
+            {% if listing.active and listing.author != user %}
+            | <a href="{% url 'bid' listing.id %}">Bid on this item</a></p>
+            {% endif %}
             <h5>Details</h5>
             <ul>
                 <li>Listed by: {{ listing.author }}</li>
                 <li>Category: {{ listing.category }}</li>
             </ul>
             {% if listing.active and listing.author == user %}
-                <a class="btn btn-outline-info" href="{% url 'close_listing' listing.id %}" role="button">Close</a>
+            <a class="btn btn-outline-info" href="{% url 'close_listing' listing.id %}" role="button">Close</a>
             {% endif %}
             {% if listing.buyer is not None and listing.active == False %}
-                {% if listing.author == user %}
-                    You've sold this item to {{ listing.buyer }} for {{ listing.current_bid|default:listing.starting_bid }}
-                {% elif listing.buyer == user %}
-                    Congratulations you've won this auction!
-                {% else %}
-                    This item is already sold
-                {% endif %}
+            {% if listing.author == user %}
+            You've sold this item to {{ listing.buyer }} for ${{ listing.current_bid|default:listing.starting_bid }}
+            {% elif listing.buyer == user %}
+            Congratulations you've won this auction!
+            {% else %}
+            This item is already sold
+            {% endif %}
             {% endif %}
         </div>
     </div>
 </div>
 <div class="card" style="width: 790px; margin-left: 286px; margin-top: 10px;">
-    <div class="card-header">All comments ({{ comment_count }})<div class="comment-form"
-            style="margin-left: 500px; width: 468px; display: flex;">
-            {% if user.is_authenticated %}
-            <div style="flex: 1;">
-                <form action="{% url 'comment' listing.id %}" method="POST">
-                    {% csrf_token %}
-                    {{ comment_form }}
-                    <div style="flex: 1">
-                        <button type="submit" class="btn btn-primary"
-                            style="width: 60px; margin-left: 9px;">Add</button>
-                    </div>
-                </form>
-            </div>
-            {% endif %}
+    <div class="card-header" style="display: flex">
+        <div style="flex: 5; width: 120px; text-align: center; padding-top: 6px">
+            All comments ({{ comment_count }})
         </div>
+        {% if user.is_authenticated %}
+        <div style="flex: 1;">
+            <form action="{% url 'comment' listing.id %}" method="POST">
+                {% csrf_token %}
+                {{ comment_form }}
+        </div>
+        <div style="flex: 1;">
+            <button type="submit" class="btn btn-primary" style="width: 60px; margin-left: 9px;">Add</button>
+        </div>
+        </form>
+        {% endif %}
     </div>
     {% for comment in comments %}
     <ul class="list-group list-group-flush">
-        <li class="list-group-item">{{ comment.author }} &middot; {{ comment }} | {{ comment.date }} </li>
+        <li class="list-group-item" style="text-align: center;">{{ comment.author }} &middot; {{ comment }} | {{ comment.date }} </li>
+        {% empty %}
+        <li class="list-group-item" style="text-align: center;">No comments has been posted yet.</li>
     </ul>
     {% endfor %}
 </div>
