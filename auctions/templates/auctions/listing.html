@@ -21,12 +21,6 @@
             <h4 class="card-title">Listing: {{ listing.title }}</h4>
             <p class="card-text">Description: {{ listing.description }}</p>
             <p class="card-text">Starting Price: ${{ listing.starting_bid }}
-                {% if listing.active and listing.author == user %}
-                | <a href="{% url 'bid' listing.id %}">View bids</a></p>
-            {% endif %}
-            {% if listing.active and listing.author != user %}
-            | <a href="{% url 'bid' listing.id %}">Bid on this item</a></p>
-            {% endif %}
             <h5>Details</h5>
             <ul>
                 <li>Listed by: {{ listing.author }}</li>
@@ -83,5 +77,35 @@
     </ul>
     {% endfor %}
 </div>
+<div class="card" style="width: 790px; margin-left: 286px; margin-top: 10px;">
+    <div class="card-header" style="display: flex">
+        <div style="flex: 5; width: 120px; text-align: center; padding-top: 6px">
+            All bids ({{bid_count}}); Starting price=${{ listing.starting_bid }}
+        </div>
+        {% if user.is_authenticated and listing.author != user %}
+        <div style="flex: 1;">
+            <form action="{% url 'bid' listing.id %}" method="POST">
+                {% csrf_token %}
+                {{ bid_form }}
+        </div>
+        <div style="flex: 1;">
+            <button type="submit" class="btn btn-primary" style="width: 75px; margin-left: 9px;">Place</button>
+        </div>
+        </form>
+        {% endif %}
+    </div>
+    <ul class="list-group list-group-flush">
+        {% if value_error %}
 
+        <div class="alert alert-danger" role="alert">
+            Your bid must be at least as large as starting bid and must be greater than any other offers (if any).
+        </div>    
+        {% endif %}
+        {% for bid in listing.bids.all %}
+            <li class="list-group-item" style="text-align: center;">{{ bid.author }} &middot; {{ bid.offer }} | {{ bid.date }} </li>
+        {% empty %}
+            <li class="list-group-item" style="text-align: center;">No offers has been placed yet.</li>
+    </ul>
+    {% endfor %}
+</div>
 {% endblock %}

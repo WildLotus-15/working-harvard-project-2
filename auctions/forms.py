@@ -13,7 +13,8 @@ class NewBidForm(ModelForm):
             super(NewBidForm, self).__init__(*args, **kwargs)
             self.fields['offer'].widget.attrs = {'class': 'form-control', 'placeholder': 'Enter an offer...' }
             self.fields['offer'].label = ''
-    
+            self.fields['offer'].widget.attrs['style'] = 'width: 386px'
+
     class Meta:
         model = Bid
         fields = ['offer']

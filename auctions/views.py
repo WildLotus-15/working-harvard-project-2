@@ -18,6 +18,8 @@ def listing(request, listing_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('login'))
     listing = Listing.objects.get(pk=listing_id)
+    bids = Bid.objects.filter(listing=listing)
+    bid_count = bids.count()
     comments = Comment.objects.filter(listing=listing)
     comment_count = comments.count()
     if request.user in listing.watchers.all():
@@ -29,7 +31,8 @@ def listing(request, listing_id):
         "comments": listing.comments.all(),
         "comment_count": comment_count,
         "comment_form": NewCommentForm(),
-        "in_watchlist": listing.is_watched
+        "bid_form": NewBidForm(),
+        "bid_count": bid_count
     })
 
 def newListing(request):
@@ -72,8 +75,6 @@ def change_watchlist(request, listing_id, reverse_method):
 
 def bid(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
-    bids = Bid.objects.filter(listing=listing)
-    bid_count = bids.count()
     form = NewBidForm(request.POST)
     if form.is_valid():
         offer = float(request.POST['offer'])
@@ -84,19 +85,17 @@ def bid(request, listing_id):
             newBid.author = request.user
             newBid.save()
             listing.save()
-            return HttpResponseRedirect(reverse("bid", args=[listing_id]))
+            return HttpResponseRedirect(reverse("listing", args=[listing_id]))
         else:
-            return render(request, "auctions/bid.html", {
+            return render(request, "auctions/listing.html", {
                 "listing": listing,
                 "form": NewBidForm(),
                 "value_error": True,
-                "bid_count": bid_count
             })
     else:
-        return render(request, "auctions/bid.html", {
+        return render(request, "auctions/listing.html", {
             "form": NewBidForm(),
             "listing": listing,
-            "bid_count": bid_count
         })
 
 def is_valid(offer, listing):
