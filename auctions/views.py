@@ -11,7 +11,7 @@ from .forms import NewBidForm, NewCommentForm, NewListingForm
 def activeListing(request):
     listing = Listing.objects.filter(active=True)
     return render(request, "auctions/index.html", {
-        "listing": listing,
+        "listings": listing,
     })
 
 def listing(request, listing_id):
@@ -38,7 +38,6 @@ def newListing(request):
     if request.method == "POST":
         form = NewListingForm(request.POST)
         if form.is_valid():
-            print("printing Post:", request.POST)
             newListing = form.save(commit=False)
             newListing.author = request.user
             newListing.save()
@@ -48,12 +47,24 @@ def newListing(request):
         "success": True
     })
 
+def watchlist(request):
+    listings = request.user.watched_listings.all()
+    for listing in listings:
+        if request.user in listing.watchers.all():
+            listing.is_watched = True
+        else:
+            listing.is_watched = False
+    return render(request, "auctions/watchlist.html", {
+        "listings": listings,
+    })
+
 def change_watchlist(request, listing_id, reverse_method):
-    listing = Listing.objects.get(pk=listing_id)
-    if request.user in listing.watchers.all():
-        listing.watchers.remove(request.user)
+    listing_object = Listing.objects.get(pk=listing_id)
+    if request.user in listing_object.watchers.all():
+        listing_object.watchers.remove(request.user)
     else:
-        listing.watchers.add(request.user)
+        listing_object.watchers.add(request.user)
+
     if reverse_method == "listing":
         return listing(request, listing_id)
     else:

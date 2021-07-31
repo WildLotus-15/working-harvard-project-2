@@ -8,16 +8,16 @@
     <div class="row" style="height: 500px; padding: 0 20px; margin-left: 250px;">
         <div class="col-xs-4">
             {% if listing.image_url %}
-            <img src="{{ listing.image_url }}" alt="Card image cap"
+            <img src="{{ listing.image_url }}" alt="{{ listing.description }}"
                 style="width: 370px; height: 352px; margin-top: 14px;">
             {% else %}
             <div class="p-3">
-                <img src="static/auctions/not-found.png" alt="No-image" style="height: 350px;">
+                <img src="https://1080motion.com/wp-content/uploads/2018/06/NoImageFound.jpg.png" alt="No-image" style="height: 350px;">
             </div>
             {% endif %}
         </div>
         <div class="col-xs-4 border border-secondary" id="detail"
-            style="padding-left: 20px; width: 300px; height: 350px; margin-top: 15px; padding-top: 20px; margin-left: 10px; display: inline-block;">
+            style="padding-left: 13px; width: 300px; height: 350px; margin-top: 15px; padding-top: 20px; margin-left: 10px; display: inline-block;">
             <h4 class="card-title">Listing: {{ listing.title }}</h4>
             <p class="card-text">Description: {{ listing.description }}</p>
             <p class="card-text">Starting Price: ${{ listing.starting_bid }}
@@ -30,19 +30,30 @@
             <h5>Details</h5>
             <ul>
                 <li>Listed by: {{ listing.author }}</li>
-                <li>Category: {{ listing.category }}</li>
+                {% if listing.category is not None %}
+                    <li>Category: {{ listing.category }}</li>
+                {% else %}
+                    <li>Category: No category specified.</li>
+                {% endif %}
             </ul>
             {% if listing.active and listing.author == user %}
-            <a class="btn btn-outline-info" href="{% url 'close_listing' listing.id %}" role="button">Close</a>
+            <a class="btn btn-outline-info" href="{% url 'close_listing' listing.id %}" role="button">Close Auction</a>
             {% endif %}
+            <a href="{% url 'change_watchlist' listing.id 'listing' %}" class="card-link">
+                {% if listing.is_watched %}
+                    <p>Remove from my watchlist</p>
+                {% else %}
+                    <p>Add it to my watchlist</p>
+                {% endif %}
+            </a>
             {% if listing.buyer is not None and listing.active == False %}
-            {% if listing.author == user %}
-            You've sold this item to {{ listing.buyer }} for ${{ listing.current_bid|default:listing.starting_bid }}
-            {% elif listing.buyer == user %}
-            Congratulations you've won this auction!
-            {% else %}
-            This item is already sold
-            {% endif %}
+                {% if listing.author == user %}
+                    You've sold this item to {{ listing.buyer }} for ${{ listing.current_bid|default:listing.starting_bid }}
+                {% elif listing.buyer == user %}
+                    Congratulations you've won this auction!
+                {% else %}
+                    This item is already sold
+                {% endif %}
             {% endif %}
         </div>
     </div>

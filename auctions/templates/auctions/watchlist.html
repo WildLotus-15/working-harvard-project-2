@@ -1,6 +1,6 @@
 {% extends "auctions/layout.html" %}
 {% block body %}
-<h2>Active Listings</h2>
+<h2>Watchlist</h2>
 {% for listing in listings %}
 <a href="{% url 'listing' listing.id %}" style="text-decoration: none;">
     <div class="row">
@@ -29,7 +29,7 @@
 </a>
 {% empty %}
 <div class="alert alert-info" role="alert">
-    No active listings
+    There is not an item in your watchlist yet.
 </div>
 {% endfor %}
 {% endblock %}
