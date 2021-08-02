@@ -4,14 +4,21 @@ from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
-from .models import User, Listing, Bid, Comment
+from .models import User, Listing, Bid, Comment, Category
 from .forms import NewBidForm, NewCommentForm, NewListingForm
 
 def activeListing(request):
-    listing = Listing.objects.filter(active=True)
+    category_id = request.GET.get('category', None)
+    if category_id is None:
+        listing = Listing.objects.filter(active=True)
+    else:
+        listing = Listing.objects.filter(active=True, category=category_id)
+    categories = Category.objects.all()
     return render(request, "auctions/index.html", {
         "listings": listing,
+        "categories": categories
     })
 
 def listing(request, listing_id):
@@ -73,6 +80,7 @@ def change_watchlist(request, listing_id, reverse_method):
     else:
         return HttpResponseRedirect(reverse(reverse_method))
 
+@login_required(login_url='/login')
 def bid(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     form = NewBidForm(request.POST)

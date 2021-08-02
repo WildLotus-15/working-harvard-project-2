@@ -1,5 +1,15 @@
 {% extends "auctions/layout.html" %}
 {% block body %}
+<ul class="nav">
+    <li class="nav-item">
+        <a href="" class="nav-link disabled">CATEGORIES</a>
+    </li>
+    {% for category in categories %}
+        <li class="nav-item">
+                <a href="{% url 'index' %}?category={{ category.id }}" class="nav-link">{{ category.category|upper }}</a>
+        </li>
+    {% endfor %}    
+</ul>
 <h2>Active Listings</h2>
 {% for listing in listings %}
 <a href="{% url 'listing' listing.id %}" style="text-decoration: none;">
